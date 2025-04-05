@@ -345,6 +345,7 @@ def game_vs_com(screen, player1):
                     scroll_pos = 0
                     show_hint = False
                     hint_move = None
+                    timer_start = pygame.time.get_ticks()
                 elif rules_btn.collidepoint(event.pos):
                     show_rules_dialog(screen)
                     timer_start = pygame.time.get_ticks()

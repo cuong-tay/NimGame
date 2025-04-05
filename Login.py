@@ -48,11 +48,15 @@ music_playing = False
 
 # Tải icon loa
 try:
-    speaker_icon = pygame.image.load("Image/loabat.png")  # Thay đổi đường dẫn đến file hình loa
-    speaker_icon = pygame.transform.scale(speaker_icon, (30, 30))  # Thay đổi kích thước của icon
-except pygame.error:
-    print("Không thể tải icon loa.")
-    speaker_icon = None
+    speaker_on_icon = pygame.image.load("Image/loabat.png")
+    speaker_on_icon = pygame.transform.scale(speaker_on_icon, (30, 30))
+
+    speaker_off_icon = pygame.image.load("Image/loatat.png")  # Thêm icon loa tắt
+    speaker_off_icon = pygame.transform.scale(speaker_off_icon, (30, 30))
+except pygame.error as e:
+    print(f"Không thể tải icon loa: {e}")
+    speaker_on_icon = None
+    speaker_off_icon = None
 # Hàm vẽ nút với hiệu ứng hover
 def draw_button(button, text, mouse_pos, radius=15):
     color = HOVER_COLOR if button.collidepoint(mouse_pos) else ORANGE
@@ -66,18 +70,20 @@ def draw_button(button, text, mouse_pos, radius=15):
     screen.blit(text_surface, (text_x, text_y))
 
 def draw_sound_button(mouse_pos):
-    """Vẽ nút loa với icon trong suốt và hình tròn"""
+    """Vẽ nút loa với icon phù hợp dựa trên trạng thái nhạc"""
     color = HOVER_COLOR if sound_button.collidepoint(mouse_pos) else GRAY
 
-    # Vẽ hình tròn thay vì hình chữ nhật
-    pygame.draw.circle(screen, WHITE, sound_button.center, sound_button.width // 2)  # Vẽ hình tròn
-    pygame.draw.circle(screen, color, sound_button.center, sound_button.width // 2, 0)  # Viền tròn
+    # Vẽ hình tròn
+    pygame.draw.circle(screen, WHITE, sound_button.center, sound_button.width // 2)
+    pygame.draw.circle(screen, color, sound_button.center, sound_button.width // 2, 0)
 
-    # Hiển thị icon loa nếu có
-    if speaker_icon:
-        # Căn giữa icon trong hình tròn
-        icon_rect = speaker_icon.get_rect(center=sound_button.center)
-        screen.blit(speaker_icon, icon_rect)
+    # Hiển thị icon loa phù hợp dựa trên trạng thái nhạc
+    if music_playing and speaker_on_icon:
+        icon_rect = speaker_on_icon.get_rect(center=sound_button.center)
+        screen.blit(speaker_on_icon, icon_rect)
+    elif not music_playing and speaker_off_icon:
+        icon_rect = speaker_off_icon.get_rect(center=sound_button.center)
+        screen.blit(speaker_off_icon, icon_rect)
 
 def toggle_music():
     global music_playing
